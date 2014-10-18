@@ -11,13 +11,22 @@ import java.util.Scanner;
 
 public class Dictionary {
 	
-	private FileReader file;
-	private List<String> dict;
+	private FileReader nounReader;
+	private FileReader verbReader;
+	private FileReader adjReader;
+	private FileReader advReader;
+	private List<String> nouns;
+	private List<String> verbs;
+	private List<String> adjs;
+	private List<String> advs;
 	
 	
-	public Dictionary(String filename){
+	public Dictionary(String nounName, String verbName, String adjName, String advName){
 		try {
-			file = new FileReader(filename);
+			nounReader = new FileReader(nounName);
+			verbReader = new FileReader(verbName);
+			adjReader = new FileReader(adjName);
+			advReader = new FileReader(advName);
 			generateDict();
 		} catch (FileNotFoundException e) {
 			System.err.println("File not found, shutting down");
@@ -25,27 +34,69 @@ public class Dictionary {
 		}
 	}
 	public Dictionary(){
-		this("dictionary.txt");
+		this("nouns.txt","verbs.txt","adjectives.txt","adverbs.txt");
 	}
 	
 	private void generateDict(){
-		dict = new ArrayList<String>();
-		Scanner scan = new Scanner(file);
+		nouns = new ArrayList<String>();
+		verbs = new ArrayList<String>();
+		adjs = new ArrayList<String>();
+		advs = new ArrayList<String>();
+		Scanner scan = new Scanner(nounReader);
+		
+		// get nouns
 		while(scan.hasNextLine()){
-			dict.add(scan.nextLine());
+			nouns.add(scan.nextLine());
+		}
+		scan.close();
+		// get verbs
+		scan = new Scanner(verbReader);
+		while(scan.hasNextLine()){
+			verbs.add(scan.nextLine());
+		}
+		scan.close();
+		// get adjectives
+		scan = new Scanner(adjReader);
+		while(scan.hasNextLine()){
+			adjs.add(scan.nextLine());
+		}
+		scan.close();
+		// get adverbs
+		scan = new Scanner(advReader);
+		while(scan.hasNextLine()){
+			advs.add(scan.nextLine());
 		}
 		scan.close();
 	}
 	
-	public List<String> getDict(){
-		return dict;
-	}
 	public ArrayList<String> getWords(int numWords) {
+		int numNoun = 2;
+		int numVerb = 2;
+		int numAdj = 0;
+		int numAdv = 1;
+		 // no adjectives pulled for default of 5 words, also used if unsupported value is selected
+		if(numWords == 6){numNoun = 2; numVerb = 2; numAdj = 1; numAdv = 1;}
+		else if(numWords == 7){numNoun = 2; numVerb = 3; numAdj = 1; numAdv = 1;}
+		else if(numWords == 8){numNoun = 3; numVerb = 3; numAdj = 1; numAdv = 1;}
+		else if(numWords == 9){numNoun = 3; numVerb = 3; numAdj = 1; numAdv = 2;}
+		else if(numWords == 10){numNoun = 3; numVerb = 3; numAdj = 2; numAdv = 2;}
 		ArrayList<String> words = new ArrayList<String>();
 		int rand = 0;
-		for(int i = 0; i<numWords; i++){
-			rand = (int) (Math.random()*dict.size());
-			words.add(dict.get(rand));
+		for(int i = 0; i<numNoun; i++){
+			rand = (int) (Math.random()*nouns.size());
+			words.add(nouns.get(rand));
+		}
+		for(int i = 0; i<numVerb; i++){
+			rand = (int) (Math.random()*verbs.size());
+			words.add(verbs.get(rand));
+		}
+		for(int i = 0; i<numAdj; i++){
+			rand = (int) (Math.random()*adjs.size());
+			words.add(adjs.get(rand));
+		}
+		for(int i = 0; i<numAdv; i++){
+			rand = (int) (Math.random()*advs.size());
+			words.add(advs.get(rand));
 		}
 		return words;
 	}

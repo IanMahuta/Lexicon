@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 
 public class FinalScreen extends JFrame {
 	public FinalScreen(int numPlayers, int numRounds, int[] finalScores){
-		this.setTitle("Lexicon v 0.1 Final Scores");
+		this.setTitle("Lexicon v 0.2 Final Scores");
 		JTextArea finalHeader = new JTextArea("The final scores after "+numRounds+" rounds are:");
 		finalHeader.setEditable(false);
 		

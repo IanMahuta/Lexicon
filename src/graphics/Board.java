@@ -23,7 +23,7 @@ public class Board extends JFrame implements ActionListener{
 	JButton submitButton;
 	JButton[] wordButtons;
 	JTextArea playerArea;
-	JTextField answerField;
+	JTextArea answerField;
 	Game game;
 	List<String> words;
 	Stack<Integer> wordStack;
@@ -34,9 +34,11 @@ public class Board extends JFrame implements ActionListener{
 	Scoring scoring;
 	int numRounds;
 	int currentRound = 0;
+	ArrayList<String> linkingWords;
+	JButton[] linkingButtons;
 
 	public Board(int numPlayers, int numRounds, int numWords){
-		this.setTitle("Lexicon v 0.1 Round"+currentRound);
+		this.setTitle("Lexicon v 0.2 Round"+currentRound);
 		this.numPlayers = numPlayers;
 		this.numRounds = numRounds;
 		currentAnswers = new ArrayList<String>();
@@ -44,7 +46,7 @@ public class Board extends JFrame implements ActionListener{
 		for(int i = 0; i<numPlayers; i++){
 			currentScores[i] = 0;
 		}
-		
+
 		this.setLayout(new BorderLayout());
 		JTextArea rulesArea = new JTextArea();
 		rulesArea.setText("Below are listed "+numWords+" words, place the words in order by clicking on them to make the "+
@@ -60,7 +62,7 @@ public class Board extends JFrame implements ActionListener{
 		buttonsPane.add(submitButton);
 
 		JFrame innerFrame = new JFrame();
-		innerFrame.setLayout(new GridLayout(2,1));
+		innerFrame.setLayout(new GridLayout(3,1));
 		Container innerContent = innerFrame.getContentPane();
 
 		JPanel wordsPane = new JPanel();
@@ -74,14 +76,32 @@ public class Board extends JFrame implements ActionListener{
 		JPanel answerPane = new JPanel();
 		playerArea = new JTextArea("Player "+currentPlayer);
 		playerArea.setEditable(false);
-		answerField = new JTextField("                                                        ");
+		answerField = new JTextArea("                                 ");
 		answerField.setEditable(false);
 		answerField.setSize(500,25);
 		answerPane.add(playerArea);
 		answerPane.add(answerField);
 
+		JPanel linkingPane = new JPanel();
+		linkingWords = new ArrayList<String>();
+		linkingWords.add("the");
+		linkingWords.add("a");
+		linkingWords.add("an");
+		linkingWords.add("it");
+		linkingWords.add("and");
+		linkingWords.add("or");
+		linkingWords.add("but");
+		linkingWords.add("for");
+		linkingWords.add("so");
+		linkingButtons = new JButton[linkingWords.size()];
+		for(int i = 0; i < linkingWords.size(); i++){
+			linkingButtons[i] = new JButton(linkingWords.get(i));
+			linkingButtons[i].addActionListener(this);
+			linkingPane.add(linkingButtons[i]);
+		}
 		innerContent.add(wordsPane);
 		innerContent.add(answerPane);
+		innerContent.add(linkingPane);
 
 		Container content = this.getContentPane();
 
@@ -92,10 +112,10 @@ public class Board extends JFrame implements ActionListener{
 		this.setVisible(true);
 		this.setSize(700,300);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		wordStack = new Stack<Integer>();
-		
-		game = new Game(numPlayers, numRounds, numWords, "dictionary.txt");
+
+		game = new Game(numPlayers, numRounds, numWords, "nouns.txt","verbs.txt","adjectives.txt","adverbs.txt");
 		processNextRound();
 	}
 
@@ -115,12 +135,12 @@ public class Board extends JFrame implements ActionListener{
 			new FinalScreen(numPlayers, numRounds, currentScores);
 		}
 	}
-	
+
 	public void processNextPlayer(){
 		currentPlayer++;
 		playerArea.setText("Player "+currentPlayer);
 	}
-	
+
 	public void updateScores(int[] currentScores){
 		this.currentScores = currentScores;
 		this.setVisible(true);
@@ -138,8 +158,8 @@ public class Board extends JFrame implements ActionListener{
 			}
 			currentAnswers.add(answerField.getText());
 			answerField.setText("                                                        ");
-			
-			
+
+
 			if(currentPlayer<numPlayers){
 				processNextPlayer();
 			}else{
@@ -150,25 +170,35 @@ public class Board extends JFrame implements ActionListener{
 		}else if(e.getSource().equals(undoButton)){
 			if(!wordStack.isEmpty()){
 				int last = wordStack.pop();
-				wordButtons[last].setEnabled(true);
+				if(last>=0){
+					wordButtons[last].setEnabled(true);
+				}
 				if(wordStack.isEmpty()){
 					answerField.setText("                                                        ");
-				}else{
-				String ans = answerField.getText();
-				ans = ans.substring(0,(ans.length()-(wordButtons[last].getText().length()+1)));
-				answerField.setText(ans);
+				}else{ // word from wordButtons
+					String ans = answerField.getText();
+					ans = ans.substring(0, ans.lastIndexOf(' '));
+					answerField.setText(ans);
 				}
 			}
 		}else{
 			String sourceText = ((JButton) e.getSource()).getText();
-			for(int i = 0; i<wordButtons.length; i++){
-				if(sourceText.equals(wordButtons[i].getText())){
-					if(wordStack.isEmpty()){
-						answerField.setText("");
+			if(linkingWords.contains(sourceText)){
+				if(wordStack.isEmpty()){
+					answerField.setText("");
+				}
+				answerField.setText(answerField.getText()+" "+sourceText);
+				wordStack.push(-1);
+			}else{
+				for(int i = 0; i<wordButtons.length; i++){
+					if(sourceText.equals(wordButtons[i].getText())){
+						if(wordStack.isEmpty()){
+							answerField.setText("");
+						}
+						answerField.setText(answerField.getText()+" "+wordButtons[i].getText());
+						wordStack.push(i);
+						wordButtons[i].setEnabled(false);
 					}
-					answerField.setText(answerField.getText()+" "+wordButtons[i].getText());
-					wordStack.push(i);
-					wordButtons[i].setEnabled(false);
 				}
 			}
 		}

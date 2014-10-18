@@ -18,24 +18,24 @@ public class Game {
 	}
 	
 	public Game(){
-		this(4, 5, 7, "dictionary.txt");
+		this(4, 5, 7, "nouns.txt","verbs.txt","adjectives.txt","adverbs.txt");
 	}
-	public Game(int players, int rounds, int words, String filename){
+	public Game(int players, int rounds, int words, String nounName, String verbName, String adjName, String advName){
 		numPlayers = players;
 		numRounds = rounds;
 		numWords = words;
 		
 		// generate Dictionary
-		dict = new Dictionary(filename);
+		dict = new Dictionary(nounName, verbName, adjName, advName);
 	}
 	
 	public List<String> nextRound(){
 		if(currentRound <= numRounds){
 			words = dict.getWords(numWords);
 			// display words and play
-			for(int i = 0; i< numWords; i++){
+			/*for(int i = 0; i< numWords; i++){
 				System.out.println(words.get(i));
-			}
+			}*/
 			currentRound++;
 		}else{
 			words = null;

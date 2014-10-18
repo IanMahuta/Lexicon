@@ -25,7 +25,7 @@ public class StartupScreen extends JFrame implements ActionListener {
 		selectFrame.setLayout(new GridLayout(3,2));
 		Container innerContent = selectFrame.getContentPane();
 
-		this.setTitle("Lexicon v 0.1");
+		this.setTitle("Lexicon v 0.2");
 
 		JTextArea title = new JTextArea("Welcome to Lexicon");
 		title.setEditable(false);
@@ -45,7 +45,7 @@ public class StartupScreen extends JFrame implements ActionListener {
 
 		Integer[] nums = {2,3,4};
 		playersBox = new JComboBox<Integer>(nums);
-		playersBox.setSelectedIndex(2);
+		playersBox.setSelectedIndex(0);
 		Integer[] rounds = {1,3,5,10};
 		roundsBox = new JComboBox<Integer>(rounds);
 		roundsBox.setSelectedIndex(2);

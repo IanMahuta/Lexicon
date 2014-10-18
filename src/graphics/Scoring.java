@@ -39,7 +39,7 @@ public class Scoring extends JFrame implements ActionListener {
 		this.numPlayers = numPlayers;
 		this.currentAnswers = (ArrayList<String>) currentAnswers;
 
-		this.setTitle("Lexicon v 0.1 Round "+currentRound+" Scoring");
+		this.setTitle("Lexicon v 0.2 Round "+currentRound+" Scoring");
 		this.setLayout(new BorderLayout());
 
 		instructionsArea = new JTextArea("Player "+currentPlayer+", please score the other player's answers.");
@@ -61,8 +61,14 @@ public class Scoring extends JFrame implements ActionListener {
 		innerFrame.setLayout(new GridLayout(3,1));
 		idArea = new JTextArea("Player "+playerAns+"'s answer:");
 		idArea.setEditable(false);
-
-		answerArea = new JTextArea(currentAnswers.get(playerAns-1));
+		
+		String ans = currentAnswers.get(playerAns-1);
+		/*if(ans!=""){
+			System.err.println("ans = "+ans.substring(0,2));
+			ans = (ans.substring(0,2).toUpperCase())+ans.substring(1);
+			ans+=".";
+		}*/
+		answerArea = new JTextArea(ans);
 		answerArea.setEditable(false);
 
 		buttons = new JRadioButton[10];
